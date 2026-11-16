@@ -1,0 +1,83 @@
+spring:
+  application:
+    name: bibliotecabetim-api
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:bibliotecabetim}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:1025}
+    username: ${SMTP_USER:}
+    password: ${SMTP_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls: enable
+  messages:
+    basename: messages
+server:
+  port: ${SERVER_PORT:8080}
+  forward-headers-strategy: framework
+
+# CORS - origem do front configurável via variável de ambiente
+app:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+  jwt:
+    secret: ${JWT_SECRET:change-me-in-production-min-32-chars}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  library:
+    loan-days: ${LOAN_DAYS:14}
+    max-renewals: ${MAX_RENEWALS:2}
+    max-loans-per-user: ${MAX_LOANS_PER_USER:3}
+    reservation-hold-hours: ${RESERVATION_HOLD_HOURS:48}
+
+---
+# Perfil dev
+spring:
+  config:
+    activate:
+      on-profile: dev
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:1025}
+logging:
+  level:
+    br.com.bibliotecabetim.api: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: INFO
+    org.hibernate.orm.jdbc.bind: TRACE
+
+---
+# Perfil prod
+spring:
+  config:
+    activate:
+      on-profile: prod
+logging:
+  level:
+    br.com.bibliotecabetim.api: INFO
+    org.springframework.web: INFO
+    org.hibernate.SQL: WARN
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always

@@ -1,0 +1,16 @@
+# Backend (Java)
+api/target/
+api/.mvn/
+api/mvnw
+api/mvnw.cmd
+*.class
+
+# Frontend (Node)
+projeto-web/node_modules/
+projeto-web/dist/
+projeto-web/.env
+
+# IDE / SO
+.idea/
+.vscode/
+.DS_Store
